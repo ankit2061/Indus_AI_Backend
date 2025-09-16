@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Test Collections Endpoints{% endblock %}
+
+{% block content %}
+<h2>Test Assessments</h2>
+<form id="assessmentsForm">
+  <textarea id="assessmentsData" rows="4" cols="50" placeholder='JSON data, e.g. {"product_id":"abc123","criteria_scores":{"alignment":5}}'></textarea><br />
+  <button type="submit">Create Assessment</button>
+</form>
+<div id="assessmentsResponse" style="color: green; margin-bottom: 20px;"></div>
+
+<h2>Test Heritage Nodes</h2>
+<form id="heritageNodesForm">
+  <textarea id="heritageNodesData" rows="4" cols="50" placeholder='JSON data, e.g. {"craft":"Ajrakh","region":"Gujarat"}'></textarea><br />
+  <button type="submit">Create Heritage Node</button>
+</form>
+<div id="heritageNodesResponse" style="color: green; margin-bottom: 20px;"></div>
+
+<h2>Test Mentorship Matches</h2>
+<form id="mentorshipMatchesForm">
+  <textarea id="mentorshipMatchesData" rows="4" cols="50" placeholder='JSON data, e.g. {"artisan_id":"x1","mentor_id":"y2"}'></textarea><br />
+  <button type="submit">Create Mentorship Match</button>
+</form>
+<div id="mentorshipMatchesResponse" style="color: green; margin-bottom: 20px;"></div>
+
+<h2>Test Products</h2>
+<form id="productsForm">
+  <textarea id="productsData" rows="4" cols="50" placeholder='JSON data, e.g. {"name":"Toy","artisan_id":"abc123"}'></textarea><br />
+  <button type="submit">Create Product</button>
+</form>
+<div id="productsResponse" style="color: green; margin-bottom: 20px;"></div>
+
+<h2>Test Story Drafts</h2>
+<form id="storyDraftsForm">
+  <textarea id="storyDraftsData" rows="4" cols="50" placeholder='JSON data, e.g. {"artisan_id":"abc","draft_text":"Sample story"}'></textarea><br />
+  <button type="submit">Create Story Draft</button>
+</form>
+<div id="storyDraftsResponse" style="color: green; margin-bottom: 20px;"></div>
+
+<script>
+async function postData(endpoint, data, responseId) {
+  const responseDiv = document.getElementById(responseId);
+  responseDiv.style.color = "black";
+  responseDiv.textContent = "Sending...";
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error(`Status ${response.status}`);
+    const resData = await response.json();
+    responseDiv.style.color = "green";
+    responseDiv.textContent = `Created document with ID: ${resData.id}`;
+  } catch (err) {
+    responseDiv.style.color = "red";
+    responseDiv.textContent = `Error: ${err.message}`;
+  }
+}
+
+document.getElementById('assessmentsForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let data;
+  try { data = JSON.parse(document.getElementById('assessmentsData').value); }
+  catch { return alert("Invalid JSON"); }
+  postData('/api/assessments/', data, 'assessmentsResponse');
+});
+
+document.getElementById('heritageNodesForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let data;
+  try { data = JSON.parse(document.getElementById('heritageNodesData').value); }
+  catch { return alert("Invalid JSON"); }
+  postData('/api/heritage_nodes/', data, 'heritageNodesResponse');
+});
+
+document.getElementById('mentorshipMatchesForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let data;
+  try { data = JSON.parse(document.getElementById('mentorshipMatchesData').value); }
+  catch { return alert("Invalid JSON"); }
+  postData('/api/mentorship_matches/', data, 'mentorshipMatchesResponse');
+});
+
+document.getElementById('productsForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let data;
+  try { data = JSON.parse(document.getElementById('productsData').value); }
+  catch { return alert("Invalid JSON"); }
+  postData('/api/products/', data, 'productsResponse');
+});
+
+document.getElementById('storyDraftsForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let data;
+  try { data = JSON.parse(document.getElementById('storyDraftsData').value); }
+  catch { return alert("Invalid JSON"); }
+  postData('/api/story_drafts/', data, 'storyDraftsResponse');
+});
+</script>
+{% endblock %}

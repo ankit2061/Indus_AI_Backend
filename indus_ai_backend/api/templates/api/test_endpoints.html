@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block title %}Test Backend Endpoints{% endblock %}
+
+{% block content %}
+
+<h2>Test Story Generation Endpoint</h2>
+<form id="storyForm">
+    <label for="storyPrompt">Story Prompt (optional):</label><br />
+    <textarea id="storyPrompt" rows="4" cols="50"></textarea><br />
+    <button type="submit">Generate Story</button>
+</form>
+
+<div id="storyResponse" style="margin-top: 10px; color: green;"></div>
+
+<hr />
+
+<h2>Test Create Artisan Endpoint</h2>
+<form id="artisanForm">
+    <label>Name:</label><br />
+    <input type="text" id="artisanName" required /><br />
+    <label>Region:</label><br />
+    <input type="text" id="artisanRegion" required /><br />
+    <label>Languages (comma separated):</label><br />
+    <input type="text" id="artisanLanguages" required /><br />
+    <button type="submit">Create Artisan</button>
+</form>
+
+<div id="artisanResponse" style="margin-top: 10px; color: green;"></div>
+
+<script>
+document.getElementById('storyForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const prompt = document.getElementById('storyPrompt').value;
+    const responseDiv = document.getElementById('storyResponse');
+    responseDiv.textContent = 'Generating story...';
+
+    try {
+        const response = await fetch('/api/stories/generate/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt })
+        });
+        const data = await response.json();
+        responseDiv.textContent = `Story: ${data.story}`;
+    } catch (error) {
+        responseDiv.textContent = 'Error generating story.';
+    }
+});
+
+document.getElementById('artisanForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('artisanName').value;
+    const region = document.getElementById('artisanRegion').value;
+    const languages = document.getElementById('artisanLanguages').value.split(',').map(s => s.trim());
+    const responseDiv = document.getElementById('artisanResponse');
+    responseDiv.textContent = 'Creating artisan...';
+
+    try {
+        const response = await fetch('/api/artisans/create/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, region, languages, approval_status: 'pending' })
+        });
+        const data = await response.json();
+        responseDiv.textContent = `Artisan created with ID: ${data.id}`;
+    } catch (error) {
+        responseDiv.textContent = 'Error creating artisan.';
+    }
+});
+</script>
+
+{% endblock %}
