@@ -26,10 +26,10 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').sp
 
 # Application definition - Removed database-dependent apps for Firestore-only setup
 INSTALLED_APPS = [
-    # 'django.contrib.admin',     # Requires database - remove if not needed
-    # 'django.contrib.auth',      # Requires database - remove if using custom auth
+    'django.contrib.admin',     # Requires database - remove if not needed
+    'django.contrib.auth',      # Requires database - remove if using custom auth
     'django.contrib.contenttypes',  # Keep for framework functionality
-    # 'django.contrib.sessions',  # Requires database - remove if using custom sessions
+    'django.contrib.sessions',  # Requires database - remove if using custom sessions
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
