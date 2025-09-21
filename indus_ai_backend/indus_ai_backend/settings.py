@@ -142,40 +142,29 @@ if not DEBUG:
 # You can implement custom session storage in Firestore if needed
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
-# Logging configuration
+# Simplified logging for production
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
+            'format': '[{asctime}] {levelname} {name}: {message}',
             'style': '{',
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
-            'formatter': 'verbose',
-        },
         'console': {
-            'level': 'INFO',
             'class': 'logging.StreamHandler',
-            'formatter': 'simple',
+            'formatter': 'verbose',
         },
     },
     'root': {
-        'handlers': ['console', 'file'],
         'level': 'INFO',
+        'handlers': ['console'],
     },
     'loggers': {
-        'firestore_client': {
-            'handlers': ['console', 'file'],
+        'django': {
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
